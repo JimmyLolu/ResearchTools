@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Acoustic Absorption Predictor — free web tool for predicting sound absorption coefficients using Delany-Bazley, Miki, JCA, JCAL, Zwikker-Kosten, Biot and TMM models."/>
+<meta name="author" content="Jimmy Lolu Olajide"/>
+<title>Acoustic Absorption Predictor | alphaporous.com</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0b1120;--surf:#0f172a;--bdr:#1e293b;--txt:#cbd5e1;--mut:#475569;--dim:#334155;--acc:#38bdf8;--acc2:#7dd3fc;--yel:#fbbf24;--grn:#4ade80}
+body{background:var(--bg);color:var(--txt);font-family:"Segoe UI",system-ui,sans-serif;font-size:13px;line-height:1.6;overflow-y:auto;overflow-x:hidden}
+a{color:var(--acc);text-decoration:none}a:hover{text-decoration:underline}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+button{font-family:inherit;cursor:pointer}
+input[type=text]{background:var(--bg);color:#e2e8f0;border:1px solid var(--bdr);border-radius:4px;padding:5px 8px;font-size:11px;width:100%;font-family:monospace;outline:none}
+input[type=text]:focus{border-color:#3b82f6}
+input[type=number]{background:var(--bg);color:#e2e8f0;border:1px solid var(--bdr);border-radius:4px;padding:5px 8px;font-size:11px;width:100%;font-family:monospace;outline:none}
+input[type=number]:focus{border-color:#3b82f6}
+input[type=checkbox]{accent-color:#3b82f6;cursor:pointer}
+select{background:var(--bg);color:var(--txt);border:1px solid var(--bdr);border-radius:4px;padding:4px 6px;font-size:10px;width:100%;font-family:inherit;margin-bottom:6px}
+nav{position:sticky;top:0;z-index:100;background:rgba(11,17,32,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--bdr);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:54px}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--acc2);cursor:pointer}
+.nav-links{display:flex;gap:24px;font-size:13px}
+.nav-links span{color:var(--mut);cursor:pointer;transition:color .15s}.nav-links span:hover{color:var(--acc)}
+.hero{padding:72px 32px 48px;max-width:960px;margin:0 auto;text-align:center}
+.hero-badge{display:inline-block;background:var(--surf);border:1px solid var(--bdr);color:var(--acc);font-size:11px;padding:4px 12px;border-radius:20px;margin-bottom:20px;letter-spacing:.5px}
+.hero h1{font-size:clamp(26px,5vw,44px);font-weight:800;color:#f1f5f9;line-height:1.15;margin-bottom:16px}
+.hero h1 span{background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:15px;color:var(--mut);max-width:600px;margin:0 auto 28px;line-height:1.7}
+.hero-btns{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn-primary{background:linear-gradient(135deg,#1d4ed8,#4f46e5);color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;transition:opacity .15s}
+.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;color:var(--acc);border:1px solid var(--acc);padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;transition:background .15s}
+.btn-outline:hover{background:rgba(56,189,248,.08)}
+.model-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:0 32px 40px;max-width:860px;margin:0 auto}
+.mbadge{background:var(--surf);border:1px solid var(--bdr);border-radius:6px;padding:5px 12px;font-size:11px;display:flex;align-items:center;gap:6px}
+.section-wrap{max-width:960px;margin:0 auto;padding:0 32px 56px}
+.sec-title{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1.4px;font-weight:600;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--bdr)}
+#tool-section{padding:0 0 56px}
+.tool-label{max-width:960px;margin:0 auto 12px;padding:0 32px}
+.tool-wrap{border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+.model-btn{display:flex;justify-content:space-between;align-items:center;width:100%;padding:6px 8px;border:none;border-radius:3px;margin-bottom:2px;font-size:11px;text-align:left;background:transparent;color:#64748b;border-left:3px solid transparent}
+.model-btn.active{background:#1f2937;color:#f1f5f9}
+.add-btn{background:#1d4ed8;color:#fff;border:none;border-radius:5px;width:100%;margin-top:4px;font-size:12px;padding:9px 0;font-weight:500}
+.export-btn-sm{background:#238636;color:#fff;border:none;border-radius:5px;padding:6px 14px;font-size:11px;font-weight:500}
+.ico-btn{background:none;border:none;padding:0 2px;font-size:12px}
+.tab-btn{background:none;border:none;padding:7px 14px;font-size:11px;color:var(--mut);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab-btn.active{color:var(--acc);border-bottom:2px solid var(--acc)}
+.sl{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:1.2px;font-weight:600;margin-bottom:5px;margin-top:2px}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{text-align:center;padding:7px 10px;border-bottom:1px solid var(--bdr);color:var(--mut);font-weight:500;font-size:10px}
+td{padding:8px 10px;text-align:center}
+.mono{font-family:monospace}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:18px;transition:border-color .2s}
+.card:hover{border-color:#334155}
+.card-icon{font-size:22px;margin-bottom:10px}
+.card h3{font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:6px}
+.card p{font-size:12px;color:var(--mut);line-height:1.6}
+.cite-box{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:18px 20px}
+.cite-box pre{font-family:monospace;font-size:11.5px;color:#94a3b8;white-space:pre-wrap;line-height:1.7;margin-top:10px}
+.copy-btn{background:#1e293b;color:var(--acc);border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;float:right}
+.copy-btn:hover{background:#273549}
+.profile{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.profile-avatar{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#1d4ed8,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;flex-shrink:0}
+.profile-info h3{font-size:15px;font-weight:700;color:#e2e8f0;margin-bottom:2px}
+.profile-info p{font-size:12px;color:var(--mut)}
+.profile-links{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.plink{background:var(--surf);border:1px solid var(--bdr);color:var(--mut);border-radius:6px;padding:5px 12px;font-size:11px;display:flex;align-items:center;gap:6px;transition:border-color .15s;text-decoration:none}
+.plink:hover{border-color:var(--acc);color:var(--acc);text-decoration:none}
+footer{border-top:1px solid var(--bdr);padding:24px 32px;text-align:center;font-size:11px;color:var(--dim)}
+footer span{color:var(--mut)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <span style="font-size:20px">🔊</span> Acoustic Absorption Predictor
+  </div>
+  <div class="nav-links">
+    <span onclick="document.getElementById('tool-section').scrollIntoView({behavior:'smooth'})">Tool</span>
+    <span onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Features</span>
+    <span onclick="document.getElementById('cite').scrollIntoView({behavior:'smooth'})">Cite</span>
+    <span onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">About</span>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">🎓 Open-Access Research Tool · UNISA</div>
+  <h1>Predict <span>Sound Absorption</span><br/>from Material Parameters</h1>
+  <p>A free, browser-based tool implementing seven acoustic models for porous material characterisation — no installation, no sign-up required.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="document.getElementById('tool-section').scrollIntoView({behavior:'smooth'})">Launch Tool ↓</button>
+    <button class="btn-outline" onclick="document.getElementById('cite').scrollIntoView({behavior:'smooth'})">How to Cite</button>
+  </div>
+</div>
+
+<div class="model-grid">
+  <div class="mbadge"><span style="width:7px;height:7px;border-radius:50%;background:#38bdf8;display:inline-block"></span>Delany-Bazley</div>
+  <div class="mbadge"><span style="width:7px;height:7px;border-radius:50%;background:#38bdf8;display:inline-block"></span>Miki</div>
+  <div class="mbadge"><span style="width:7px;height:7px;border-radius:50%;background:#fbbf24;display:inline-block"></span>JCA</div>
+  <div class="mbadge"><span style="width:7px;height:7px;border-radius:50%;background:#fbbf24;display:inline-block"></span>JCAL (Lafarge)</div>
+  <div class="mbadge"><span style="width:7px;height:7px;border-radius:50%;background:#fbbf24;display:inline-block"></span>Biot</div>
+  <div class="mbadge"><span style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block"></span>Zwikker-Kosten</div>
+  <div class="mbadge"><span style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block"></span>TMM (2-layer)</div>
+  <div style="grid-column:1/-1;display:flex;gap:8px;margin-top:4px;">
+    <div class="mbadge" style="border-color:#334155"><span style="width:7px;height:7px;border-radius:50%;background:#38bdf8;display:inline-block"></span><span style="color:#475569;font-size:10px">Empirical</span></div>
+    <div class="mbadge" style="border-color:#334155"><span style="width:7px;height:7px;border-radius:50%;background:#fbbf24;display:inline-block"></span><span style="color:#475569;font-size:10px">Semi-Empirical</span></div>
+    <div class="mbadge" style="border-color:#334155"><span style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block"></span><span style="color:#475569;font-size:10px">Phenomenological</span></div>
+  </div>
+</div>
+
+<div id="tool-section">
+  <div class="tool-label"><div class="sec-title">Interactive Tool</div></div>
+  <div class="tool-wrap">
+    <div id="app" style="height:90vh;display:flex;flex-direction:column;overflow:hidden;font-size:12px"></div>
+  </div>
+</div>
+
+<div id="features" style="padding-top:48px">
+  <div class="section-wrap">
+    <div class="sec-title">Features</div>
+    <div class="cards">
+      <div class="card"><div class="card-icon">📐</div><h3>7 Acoustic Models</h3><p>From simple empirical Delany-Bazley to full Biot poroelastic theory and Transfer Matrix Method for layered systems.</p></div>
+      <div class="card"><div class="card-icon">📊</div><h3>NRC Calculation</h3><p>Automatically computes Noise Reduction Coefficient at 250, 500, 1000, and 2000 Hz with performance rating.</p></div>
+      <div class="card"><div class="card-icon">🔀</div><h3>Model Comparison</h3><p>Overlay multiple models and configurations on a single chart to compare predictions side by side.</p></div>
+      <div class="card"><div class="card-icon">⬇</div><h3>CSV Export</h3><p>Download full frequency-resolved absorption data for all active curves for further analysis in Excel or Python.</p></div>
+      <div class="card"><div class="card-icon">🔁</div><h3>TMM Layering</h3><p>Chain two material layers using the Transfer Matrix Method to simulate multilayer absorber configurations.</p></div>
+      <div class="card"><div class="card-icon">🌐</div><h3>No Install Needed</h3><p>Runs entirely in your browser. No dependencies, no account, no data sent to any server.</p></div>
+    </div>
+  </div>
+</div>
+
+<div id="cite">
+  <div class="section-wrap">
+    <div class="sec-title">How to Cite</div>
+    <div class="cite-box">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;color:#64748b">BibTeX</span>
+        <button class="copy-btn" onclick="copyText('bib-text',this)">Copy</button>
+      </div>
+      <pre id="bib-text">@misc{olajide2026acoustictool,
+  author       = {Olajide, Jimmy Lolu},
+  title        = {Acoustic Absorption Predictor: A Browser-Based Tool
+                  for Porous Material Acoustic Modelling},
+  year         = {2026},
+  institution  = {University of South Africa (UNISA),
+                  Department of Mechanical, Bioresources
+                  and Biomedical Engineering},
+  note         = {Open-access web tool. Available at:
+                  https://alphaporous.com},
+}</pre>
+    </div>
+    <div style="margin-top:12px;background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:18px 20px">
+      <div style="font-size:12px;color:#64748b;margin-bottom:8px">APA</div>
+      <p style="font-size:12px;color:#94a3b8;line-height:1.8">
+        Olajide, J. L. (2026). <em>Acoustic Absorption Predictor: A browser-based tool for porous material acoustic modelling</em> [Web application]. University of South Africa (UNISA), Department of Mechanical, Bioresources and Biomedical Engineering. https://alphaporous.com
+      </p>
+    </div>
+    <div style="margin-top:12px;background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:18px 20px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;color:#64748b">EndNote (RIS)</span>
+        <button class="copy-btn" onclick="copyText('ris-text',this)">Copy</button>
+      </div>
+      <pre id="ris-text">TY  - COMP
+AU  - Olajide, Jimmy Lolu
+TI  - Acoustic Absorption Predictor: A Browser-Based Tool for Porous Material Acoustic Modelling
+PY  - 2026
+PB  - University of South Africa (UNISA)
+CY  - Florida, South Africa
+AB  - A free browser-based tool implementing seven acoustic models for predicting sound absorption 
+      coefficients of porous materials.
+UR  - https://alphaporous.com
+ER  -</pre>
+    </div>
+  </div>
+</div>
+
+<div id="about">
+  <div class="section-wrap">
+    <div class="sec-title">About the Author</div>
+    <div class="profile">
+      <div class="profile-avatar">JO</div>
+      <div class="profile-info">
+        <h3>Jimmy Lolu Olajide</h3>
+        <p>Computational Materials Scientist · Postgraduate Researcher</p>
+        <p style="font-size:11px;margin-top:2px;color:#334155">Department of Mechanical, Bioresources and Biomedical Engineering<br/>University of South Africa (UNISA) · Florida Campus</p>
+        <div class="profile-links">
+          <a href="https://www.researchgate.net/profile/Jimmy-Olajide" target="_blank" class="plink">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19.586 0H4.414A4.414 4.414 0 000 4.414v15.172A4.414 4.414 0 004.414 24h15.172A4.414 4.414 0 0024 19.586V4.414A4.414 4.414 0 0019.586 0zM11.52 16.164c-2.69 0-4.43-1.81-4.43-4.574 0-2.766 1.74-4.574 4.43-4.574 1.56 0 2.784.624 3.564 1.716l-1.248.936c-.516-.756-1.308-1.2-2.316-1.2-1.716 0-2.784 1.248-2.784 3.122 0 1.872 1.068 3.12 2.784 3.12 1.32 0 2.196-.636 2.508-1.788h-2.64v-1.44h4.296c.048.276.072.564.072.852 0 2.388-1.56 3.83-4.236 3.83z"/></svg>
+            ResearchGate
+          </a>
+          <a href="https://scholar.google.com/citations?hl=en&user=HulJMpkAAAAJ&view_op=list_works&sortby=pubdate" target="_blank" class="plink">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 24a7 7 0 110-14 7 7 0 010 14zm0-24L0 9.5h3.5v9H7v-6h3v6h3.5v-9H20z"/></svg>
+            Google Scholar
+          </a>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:#334155;margin-top:20px;line-height:1.7">
+      This tool was developed to support research and education in acoustic materials science. It provides a fast, accessible way to predict sound absorption behaviour of porous materials using established theoretical and empirical models — useful for material design, experimental validation, and academic study.
+    </p>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 <span>Jimmy Lolu Olajide</span> · University of South Africa (UNISA) · Built for open academic use</p>
+  <p style="margin-top:6px;color:#1e293b">Acoustic Absorption Predictor runs entirely client-side. No data is collected or transmitted.</p>
+</footer>
+
+<script>
+const RHO0=1.213,C0=343,Z0=RHO0*C0,ETA=1.84e-5,P0=101325,GAM=1.4,PR=0.711;
+const cr=(r,i=0)=>({r,i});
+const cadd=(a,b)=>cr(a.r+b.r,a.i+b.i);
+const csub=(a,b)=>cr(a.r-b.r,a.i-b.i);
+const cmul=(a,b)=>cr(a.r*b.r-a.i*b.i,a.r*b.i+a.i*b.r);
+const cdiv=(a,b)=>{const d=b.r*b.r+b.i*b.i;return cr((a.r*b.r+a.i*b.i)/d,(a.i*b.r-a.r*b.i)/d)};
+const csqrt=a=>{const r=Math.sqrt(a.r*a.r+a.i*a.i),t=Math.atan2(a.i,a.r);return cr(Math.sqrt(r)*Math.cos(t/2),Math.sqrt(r)*Math.sin(t/2))};
+const cabs=a=>Math.sqrt(a.r*a.r+a.i*a.i);
+const cneg=a=>cr(-a.r,-a.i);
+const ccos=a=>cr(Math.cos(a.r)*Math.cosh(a.i),-Math.sin(a.r)*Math.sinh(a.i));
+const csin=a=>cr(Math.sin(a.r)*Math.cosh(a.i),Math.cos(a.r)*Math.sinh(a.i));
+const ccot=a=>cdiv(ccos(a),csin(a));
+const CJ=cr(0,1);
+
+function absorb(Zc,k,d){const kd=cmul(k,cr(d));const Zs=cmul(cneg(CJ),cmul(Zc,ccot(kd)));const Zn=cdiv(Zs,cr(Z0));const R=cdiv(csub(Zn,cr(1)),cadd(Zn,cr(1)));const a=1-cabs(R)**2;return isNaN(a)?0:Math.max(0,Math.min(1,a));}
+
+function getZcK(f,model,p){
+  const omega=2*Math.PI*f,k0=omega/C0;
+  if(model==='db'){const X=f/p.sigma;return{Zc:cr(Z0*(1+0.0571*X**-0.754),Z0*(-0.087*X**-0.732)),k:cr(k0*(1+0.0978*X**-0.700),k0*(-0.189*X**-0.595))};}
+  if(model==='miki'){const X=f/p.sigma;return{Zc:cr(Z0*(1+0.0699*X**-0.632),Z0*(-0.107*X**-0.632)),k:cr(k0*(1+0.1602*X**-0.618),k0*(-0.2615*X**-0.618))};}
+  if(['jca','jcal','biot'].includes(model)){
+    const{sigma,phi,alpha_inf:ai,Lambda:Lv,Lambda_prime:Lt,k0p,E_frame,nu,eta_s}=p;
+    const Gv=csqrt(cadd(cr(1),cmul(cr(4*ai**2*ETA*RHO0*omega/(sigma**2*Lv**2*phi**2)),CJ)));
+    const rho=cmul(cr(ai*RHO0/phi),cadd(cr(1),cmul(cdiv(cr(sigma*phi),cr(0,omega*RHO0*ai)),Gv)));
+    let K;
+    if(model==='jcal'&&k0p){const Gt=csqrt(cadd(cr(1),cmul(cr(k0p*RHO0*PR*omega*Lt**2/(4*phi*ETA)),CJ)));const F=cadd(cr(1),cmul(cdiv(cr(-phi*ETA),cr(0,k0p*RHO0*PR*omega)),Gt));K=cdiv(cr(GAM*P0/phi),csub(cr(GAM),cdiv(cr(GAM-1),F)));}
+    else{const Gt=csqrt(cadd(cr(1),cmul(cr(omega*RHO0*PR*Lt**2/(16*ETA)),CJ)));const F=cadd(cr(1),cmul(cdiv(cr(8*ETA),cr(0,Lt**2*PR*omega*RHO0)),Gt));K=cdiv(cr(GAM*P0/phi),csub(cr(GAM),cdiv(cr(GAM-1),F)));}
+    if(model==='biot'&&E_frame>0){const Kb=E_frame/(3*(1-2*nu));K=cadd(K,cmul(cr((1-phi)**2/phi),cr(Kb,Kb*eta_s)));}
+    return{Zc:csqrt(cmul(K,rho)),k:cmul(cr(omega),csqrt(cdiv(rho,K)))};
+  }
+  if(model==='zk'){const{sigma,phi,alpha_inf:ai,r_pore:rp}=p;const rho=cmul(cr(ai*RHO0/phi),cadd(cr(1),cdiv(cr(sigma*phi),cr(0,omega*RHO0*ai))));const tF=cadd(cr(1),cdiv(cr(-8*ETA),cr(0,rp**2*RHO0*omega*PR)));const K=cdiv(cr(GAM*P0/phi),csub(cr(GAM),cmul(cr(GAM-1),tF)));return{Zc:csqrt(cmul(K,rho)),k:cmul(cr(omega),csqrt(cdiv(rho,K)))};}
+  return null;
+}
+
+function computeAlpha(f,cfg){
+  if(cfg.model==='tmm'){
+    let T=[[cr(1),cr(0)],[cr(0),cr(1)]];
+    for(const lay of cfg.layers){const res=getZcK(f,lay.model,lay.params);if(!res)continue;const{Zc,k}=res,kd=cmul(k,cr(lay.params.d));const c=ccos(kd),s=csin(kd),iZ=cdiv(cr(1),Zc);const L=[[c,cmul(CJ,cmul(Zc,s))],[cmul(CJ,cmul(iZ,s)),c]];T=[[cadd(cmul(T[0][0],L[0][0]),cmul(T[0][1],L[1][0])),cadd(cmul(T[0][0],L[0][1]),cmul(T[0][1],L[1][1]))],[cadd(cmul(T[1][0],L[0][0]),cmul(T[1][1],L[1][0])),cadd(cmul(T[1][0],L[0][1]),cmul(T[1][1],L[1][1]))]];}
+    const Zs=cdiv(T[0][0],T[1][0]);const R=cdiv(csub(cdiv(Zs,cr(Z0)),cr(1)),cadd(cdiv(Zs,cr(Z0)),cr(1)));const a=1-cabs(R)**2;return isNaN(a)?0:Math.max(0,Math.min(1,a));
+  }
+  const res=getZcK(f,cfg.model,cfg.params);return res?absorb(res.Zc,res.k,cfg.params.d):0;
+}
+
+const MODELS={
+  db:  {name:'Delany-Bazley',  cat:'Empirical',       fields:['sigma','d'],desc:'Empirical model for fibrous materials. Only requires flow resistivity.'},
+  miki:{name:'Miki',           cat:'Empirical',       fields:['sigma','d'],desc:'Modified Delany-Bazley with improved low-frequency accuracy.'},
+  jca: {name:'JCA',            cat:'Semi-Empirical',  fields:['sigma','phi','alpha_inf','Lambda','Lambda_prime','d'],desc:'Johnson-Champoux-Allard: viscous + thermal interactions in pores.'},
+  jcal:{name:'JCAL (Lafarge)',cat:'Semi-Empirical',  fields:['sigma','phi','alpha_inf','Lambda','Lambda_prime','k0p','d'],desc:'JCA extended with static thermal permeability for improved low-frequency accuracy.'},
+  zk:  {name:'Zwikker-Kosten',cat:'Phenomenological',fields:['sigma','phi','alpha_inf','r_pore','d'],desc:'Capillary tube model — physics-based viscous & thermal effects via pore radius.'},
+  biot:{name:'Biot',           cat:'Semi-Empirical',  fields:['sigma','phi','alpha_inf','Lambda','Lambda_prime','E_frame','nu','eta_s','d'],desc:'JCA framework + visco-elastic solid frame contribution.'},
+  tmm: {name:'TMM (2-layer)', cat:'Phenomenological',fields:[],desc:'Transfer Matrix Method for layered systems. Chain two distinct layers.'},
+};
+const FM={
+  sigma:       {l:'Flow Resistivity σ',      u:'Pa·s/m²',    def:10000, sc:1,     step:100,   note:'Fibrous typical: 5 000–50 000'},
+  phi:         {l:'Porosity φ',              u:'—',          def:0.95,  sc:1,     step:0.01,  note:'0 < φ < 1'},
+  alpha_inf:   {l:'Tortuosity α∞',           u:'—',          def:1.5,   sc:1,     step:0.01,  note:'α∞ ≥ 1'},
+  Lambda:      {l:'Viscous Char. Length Λ',  u:'μm',         def:100,   sc:1e-6,  step:1,     note:'Typical: 20–300 μm'},
+  Lambda_prime:{l:"Thermal Char. Length Λ'", u:'μm',         def:200,   sc:1e-6,  step:1,     note:"Usually Λ' > Λ"},
+  k0p:         {l:"Static Therm. Perm. k'₀", u:'×10⁻¹¹ m²', def:5,     sc:1e-11, step:0.1,   note:'JCAL only; typical 1–100'},
+  r_pore:      {l:'Pore Radius r',           u:'μm',         def:50,    sc:1e-6,  step:0.5,   note:'Capillary equivalent radius'},
+  E_frame:     {l:'Frame Modulus E',         u:'kPa',        def:200,   sc:1000,  step:10,    note:'Elastic modulus of solid skeleton'},
+  nu:          {l:"Poisson's Ratio ν",       u:'—',          def:0.35,  sc:1,     step:0.01,  note:'0 ≤ ν < 0.5'},
+  eta_s:       {l:'Frame Loss Factor η_s',   u:'—',          def:0.05,  sc:1,     step:0.005, note:'Structural damping coefficient'},
+  d:           {l:'Thickness d',             u:'mm',         def:50,    sc:1e-3,  step:0.5,   note:'Sample / layer thickness'},
+};
+const CAT_COL={Empirical:'#38bdf8','Semi-Empirical':'#fbbf24',Phenomenological:'#4ade80'};
+const COLORS=['#38bdf8','#f87171','#4ade80','#fbbf24','#c084fc','#fb923c','#22d3ee','#f472b6','#a3e635','#818cf8'];
+function defParams(m){const p={};(MODELS[m]?.fields||[]).forEach(f=>{p[f]=FM[f].def*FM[f].sc;});return p;}
+function defDisplay(m){const p={};(MODELS[m]?.fields||[]).forEach(f=>{p[f]=String(FM[f].def);});return p;}
+
+let S={curves:[],model:'db',params:defParams('db'),display:defDisplay('db'),
+  tmmL:[{model:'jca',params:defParams('jca'),display:defDisplay('jca')},{model:'db',params:defParams('db'),display:defDisplay('db')}],
+  fMin:'100',fMax:'5000',logX:true,tab:'chart',cnt:{},tooltip:null};
+let uid=1;
+let _chartTimer=null;
+
+// ── SPLIT RENDER ─────────────────────────────────────────────────────────────
+// renderMain() only touches #main-panel — never destroys the sidebar inputs.
+// fullRender()  rebuilds everything (model switch, tab change, curve add/remove).
+
+function getFreqs(){const N=200,mn=parseFloat(S.fMin)||100,mx=parseFloat(S.fMax)||5000,arr=[];for(let i=0;i<N;i++){const t=i/(N-1);arr.push(S.logX?mn*Math.pow(mx/mn,t):mn+t*(mx-mn));}return arr;}
+
+function buildChart(curves,freqs){
+  const W=800,H=320,ML=48,MR=16,MT=10,MB=45,PW=W-ML-MR,PH=H-MT-MB;
+  const mn=parseFloat(S.fMin)||100,mx=parseFloat(S.fMax)||5000;
+  const fx=f=>S.logX?ML+PW*(Math.log(f/mn)/Math.log(mx/mn)):ML+PW*(f-mn)/(mx-mn);
+  const fy=a=>MT+PH*(1-a);
+  let svg=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block" id="chart-svg">`;
+  svg+=`<defs><clipPath id="cp"><rect x="${ML}" y="${MT}" width="${PW}" height="${PH}"/></clipPath></defs>`;
+  svg+=`<rect x="${ML}" y="${MT}" width="${PW}" height="${PH}" fill="#0b1120" rx="2"/>`;
+  [0,0.2,0.4,0.6,0.8,1.0].forEach(a=>{const y=fy(a);svg+=`<line x1="${ML}" y1="${y}" x2="${ML+PW}" y2="${y}" stroke="#1e293b" stroke-width="1"/>`;svg+=`<text x="${ML-5}" y="${y+4}" text-anchor="end" fill="#64748b" font-size="9">${a.toFixed(1)}</text>`;});
+  svg+=`<text x="12" y="${MT+PH/2}" text-anchor="middle" fill="#64748b" font-size="11" transform="rotate(-90,12,${MT+PH/2})">α</text>`;
+  const ticks=S.logX?[63,125,250,500,1000,2000,4000,8000].filter(f=>f>=mn&&f<=mx):[mn,(mn+mx)/4,(mn+mx)/2,(mn+mx)*3/4,mx].map(Math.round);
+  ticks.forEach(f=>{const x=fx(f);svg+=`<line x1="${x}" y1="${MT}" x2="${x}" y2="${MT+PH}" stroke="#1e293b" stroke-width="1"/>`;const lbl=f>=1000?`${(f/1000).toFixed(f%1000===0?0:1)}k`:String(f);svg+=`<text x="${x}" y="${MT+PH+12}" text-anchor="middle" fill="#64748b" font-size="9">${lbl}</text>`;});
+  svg+=`<text x="${ML+PW/2}" y="${MT+PH+24}" text-anchor="middle" fill="#475569" font-size="9">Frequency (Hz)</text>`;
+  svg+=`<rect x="${ML}" y="${MT}" width="${PW}" height="${PH}" fill="none" stroke="#1e293b" stroke-width="1"/>`;
+  curves.forEach(c=>{const pts=freqs.map(f=>`${fx(f).toFixed(1)},${fy(computeAlpha(f,c)).toFixed(1)}`).join(' ');svg+=`<polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="2" stroke-linejoin="round" clip-path="url(#cp)"/>`;});
+  svg+=`<rect id="chart-overlay" x="${ML}" y="${MT}" width="${PW}" height="${PH}" fill="transparent" onmousemove="chartHover(event,${ML},${PW},${MT},${mn},${mx})" onmouseleave="chartLeave()"/>`;
+  if(S.tooltip){const{x,freqVal,vals}=S.tooltip;const lh=14,pad=8,tw=134,rows=vals.length,th=pad*2+12+rows*lh;const ttx=x+16+tw>W?x-tw-8:x+16,ty=MT+8;svg+=`<rect x="${ttx}" y="${ty}" width="${tw}" height="${th}" fill="#0f172a" stroke="#334155" rx="3"/>`;svg+=`<text x="${ttx+pad}" y="${ty+pad+9}" fill="#94a3b8" font-size="9">${Math.round(freqVal)} Hz</text>`;vals.forEach((v,i)=>{svg+=`<circle cx="${ttx+pad+4}" cy="${ty+pad+12+lh*(i+1)-4}" r="3" fill="${v.color}"/>`;svg+=`<text x="${ttx+pad+12}" y="${ty+pad+12+lh*(i+1)}" fill="#e2e8f0" font-size="9">${v.label}: ${v.a.toFixed(3)}</text>`;});const lx=Math.max(ML,Math.min(ML+PW,x));svg+=`<line x1="${lx}" y1="${MT}" x2="${lx}" y2="${MT+PH}" stroke="#334155" stroke-width="1" stroke-dasharray="3,3"/>`;}
+  svg+='</svg>';return svg;
+}
+
+function getNRC(c){const a=[250,500,1000,2000].map(f=>computeAlpha(f,c));return{a250:a[0],a500:a[1],a1000:a[2],a2000:a[3],nrc:(a[0]+a[1]+a[2]+a[3])/4};}
+function exportCSV(){const vis=S.curves.filter(c=>c.visible);const freqs=getFreqs();const hdr=['Frequency (Hz)',...vis.map(c=>`${c.label} α`)].join(',');const rows=freqs.map(f=>[Math.round(f),...vis.map(c=>computeAlpha(f,c).toFixed(4))].join(','));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([[hdr,...rows].join('\n')],{type:'text/csv'}));a.download='acoustic_absorption.csv';a.click();}
+
+function buildMainHTML(){
+  const vis=S.curves.filter(c=>c.visible);
+  const freqs=getFreqs();
+  const nrcBadges=vis.map(c=>{const r=getNRC(c);return`<div style="background:#0b1120;padding:3px 8px;border-radius:3px;font-size:10px;border-left:2px solid ${c.color}"><span style="color:#475569">NRC </span><span style="color:${c.color};font-weight:700">${r.nrc.toFixed(3)}</span></div>`;}).join('');
+  const chartContent=vis.length===0?`<div style="display:flex;height:280px;align-items:center;justify-content:center;color:#334155;font-size:12px">← Select a model, enter parameters, then click "Add to Chart"</div>`:buildChart(vis,freqs);
+  let nrcRows='';vis.forEach(c=>{const r=getNRC(c);nrcRows+=`<tr style="border-bottom:1px solid #0f172a"><td style="text-align:left;padding:9px 10px"><div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:${c.color};display:inline-block;flex-shrink:0"></span><span style="color:#e2e8f0">${c.label}</span></div></td><td class="mono" style="color:#7dd3fc">${r.a250.toFixed(3)}</td><td class="mono" style="color:#7dd3fc">${r.a500.toFixed(3)}</td><td class="mono" style="color:#7dd3fc">${r.a1000.toFixed(3)}</td><td class="mono" style="color:#7dd3fc">${r.a2000.toFixed(3)}</td><td class="mono" style="color:${c.color};font-weight:700;font-size:13px">${r.nrc.toFixed(3)}</td></tr>`;});
+  let dataRows='';freqs.forEach((f,i)=>{dataRows+=`<tr style="background:${i%2?'#0c1420':'transparent'};border-bottom:1px solid #0f172a"><td class="mono" style="color:#64748b">${Math.round(f)}</td>${vis.map(c=>`<td class="mono" style="color:#7dd3fc">${computeAlpha(f,c).toFixed(4)}</td>`).join('')}</tr>`;});
+  return `
+    <div style="display:flex;border-bottom:1px solid #1e293b;margin-bottom:4px;flex-shrink:0">
+      <button class="tab-btn ${S.tab==='chart'?'active':''}" onclick="setTab('chart')">📈 Chart</button>
+      <button class="tab-btn ${S.tab==='nrc'?'active':''}" onclick="setTab('nrc')">📊 NRC Table</button>
+      <button class="tab-btn ${S.tab==='table'?'active':''}" onclick="setTab('table')">🗂 Data Table</button>
+    </div>
+    ${S.tab==='chart'?`<div style="background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px"><div><div style="font-size:13px;font-weight:700;color:#7dd3fc">Sound Absorption Coefficient α(f)</div><div style="font-size:10px;color:#475569">Normal incidence · Rigid backing · 0 ≤ α ≤ 1</div></div><div style="display:flex;gap:6px;flex-wrap:wrap">${nrcBadges}</div></div>${chartContent}</div>`:''}
+    ${S.tab==='nrc'?`<div style="background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:16px"><div style="font-size:13px;font-weight:700;color:#7dd3fc;margin-bottom:3px">Noise Reduction Coefficient (NRC)</div><div style="font-size:10px;color:#475569;margin-bottom:14px">NRC = (α₂₅₀ + α₅₀₀ + α₁₀₀₀ + α₂₀₀₀) / 4</div>${vis.length===0?`<div style="display:flex;height:160px;align-items:center;justify-content:center;color:#334155">No active curves.</div>`:`<table><thead><tr><th style="text-align:left">Configuration</th><th>250 Hz</th><th>500 Hz</th><th>1000 Hz</th><th>2000 Hz</th><th>NRC</th></tr></thead><tbody>${nrcRows}</tbody></table><div style="margin-top:16px;display:flex;gap:6px;flex-wrap:wrap">${[['< 0.2','Poor','#ef4444'],['0.2–0.4','Fair','#fb923c'],['0.4–0.6','Good','#fbbf24'],['0.6–0.8','Very Good','#4ade80'],['> 0.8','Excellent','#38bdf8']].map(([r,l,c])=>`<div style="background:#0b1120;padding:4px 10px;border-radius:3px;font-size:10px;border-left:2px solid ${c}"><span style="color:#94a3b8;font-family:monospace">${r}</span> <span style="color:#64748b">${l}</span></div>`).join('')}</div>`}</div>`:''}
+    ${S.tab==='table'?`<div style="background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:16px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px"><div><div style="font-size:13px;font-weight:700;color:#7dd3fc">Frequency Data Table</div><div style="font-size:10px;color:#475569">α at all 200 computed frequency points</div></div><button class="export-btn-sm" onclick="exportCSV()">⬇ Download CSV</button></div>${vis.length===0?`<div style="display:flex;height:160px;align-items:center;justify-content:center;color:#334155">No active curves.</div>`:`<div style="max-height:420px;overflow:auto;border-radius:4px;border:1px solid #1e293b"><table style="font-size:10px;font-family:monospace"><thead style="position:sticky;top:0;background:#161f2e;z-index:1"><tr><th>f (Hz)</th>${vis.map(c=>`<th style="color:${c.color}">${c.label}</th>`).join('')}</tr></thead><tbody>${dataRows}</tbody></table></div>`}</div>`:''}`;
+}
+
+function pField(f,val,expr){
+  return`<div style="margin-bottom:8px">
+    <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+      <label style="color:#94a3b8;font-size:10px">${FM[f].l}</label>
+      <span style="color:#475569;font-size:9px">${FM[f].u}</span>
+    </div>
+    <input type="text" inputmode="decimal" value="${val}"
+      oninput="${expr}"
+      onkeydown="onParamKey('${f}',this,event)"
+      style="width:100%"/>
+    <div style="font-size:8.5px;color:#334155;margin-top:2px">${FM[f].note}</div>
+  </div>`;
+}
+
+function buildSidebarHTML(){
+  let modelBtns='';
+  Object.entries(MODELS).forEach(([k,m])=>{const active=S.model===k;modelBtns+=`<button class="model-btn${active?' active':''}" style="border-left:3px solid ${active?CAT_COL[m.cat]:'transparent'}" onclick="switchModel('${k}')"><span>${m.name}</span><span style="font-size:9px;color:${CAT_COL[m.cat]};background:#0b1120;padding:1px 5px;border-radius:3px;flex-shrink:0">${m.cat.split(' ')[0]}</span></button>`;});
+  const catLegend=`<div style="display:flex;flex-direction:column;gap:4px;background:#0b1120;border:1px solid #1e293b;border-radius:4px;padding:6px 8px;margin-top:4px;margin-bottom:6px"><div style="display:flex;gap:12px;flex-wrap:wrap">${[['Empirical','#38bdf8'],['Semi-Empirical','#fbbf24'],['Phenomenological','#4ade80']].map(([l,c])=>`<div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:${c};flex-shrink:0;display:inline-block"></span><span style="font-size:9px;color:#64748b">${l}</span></div>`).join('')}</div></div>`;
+  let pf='';
+  if(S.model!=='tmm'){(MODELS[S.model]?.fields||[]).forEach(f=>{pf+=pField(f,S.display[f],`onParam('${f}',this.value)`);});}
+  else{S.tmmL.forEach((lay,i)=>{let lf='';(MODELS[lay.model]?.fields||[]).forEach(f=>{lf+=pField(f,lay.display[f],`onTmmParam(${i},'${f}',this.value)`);});const opts=Object.entries(MODELS).filter(([k])=>k!=='tmm').map(([k,m])=>`<option value="${k}"${lay.model===k?' selected':''}>${m.name}</option>`).join('');pf+=`<div style="background:#0b1120;border-radius:4px;padding:8px;margin-bottom:8px;border:1px solid #1e293b"><div style="font-size:10px;color:#38bdf8;margin-bottom:6px;font-weight:600">▶ Layer ${i+1}</div><select onchange="onTmmModel(${i},this.value)">${opts}</select>${lf}</div>`;});}
+  let ac='';S.curves.forEach(c=>{ac+=`<div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;background:#0f172a;border-radius:3px;padding:4px 8px"><span style="width:8px;height:8px;border-radius:50%;background:${c.color};flex-shrink:0;display:inline-block"></span><span style="flex:1;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:${c.visible?'#cbd5e1':'#374151'}">${c.label}</span><button class="ico-btn" style="color:${c.visible?'#38bdf8':'#374151'}" onclick="toggleCurve(${c.id})">◉</button><button class="ico-btn" style="color:#ef4444" onclick="removeCurve(${c.id})">✕</button></div>`;});
+  return `
+    <div class="sl">Select Model</div>
+    ${modelBtns}
+    ${catLegend}
+    <div style="font-size:9.5px;color:#475569;background:#0b1120;padding:6px 8px;border-radius:3px;line-height:1.5;margin-bottom:8px;border:1px solid #1e293b">${MODELS[S.model].desc}</div>
+    <div class="sl">Input Parameters</div>
+    ${pf}
+    <button class="add-btn" onclick="addCurve()">+ Add to Chart</button>
+    <div class="sl" style="margin-top:14px">Frequency Range</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div><div style="font-size:9px;color:#475569;margin-bottom:3px">Min (Hz)</div><input type="number" value="${S.fMin}" oninput="S.fMin=this.value;renderMain()" style="width:100%"/></div>
+      <div><div style="font-size:9px;color:#475569;margin-bottom:3px">Max (Hz)</div><input type="number" value="${S.fMax}" oninput="S.fMax=this.value;renderMain()" style="width:100%"/></div>
+    </div>
+    <label style="display:flex;align-items:center;gap:6px;font-size:10px;cursor:pointer;color:#94a3b8;margin-bottom:8px">
+      <input type="checkbox" ${S.logX?'checked':''} onchange="S.logX=this.checked;renderMain()"/> Log frequency axis
+    </label>
+    ${S.curves.length>0?`<div class="sl" style="margin-top:6px">Active Curves</div>${ac}`:''}`;
+}
+
+// Renders only the main output panel — sidebar is untouched, no focus loss
+function renderMain(){
+  const panel=document.getElementById('main-panel');
+  if(panel) panel.innerHTML=buildMainHTML();
+}
+
+// Full rebuild — only called on model switch, curve add/remove, tab change
+function fullRender(){
+  document.getElementById('app').innerHTML=`
+    <div style="background:#0f172a;border-bottom:1px solid #1e293b;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+      <div style="font-weight:600;font-size:12px;color:#38bdf8">🔊 Acoustic Absorption Predictor <span style="color:#334155;font-weight:400;font-size:9px">· alphaporous.com</span></div>
+      <button class="export-btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
+    </div>
+    <div style="display:flex;flex:1;overflow:hidden">
+      <aside id="sidebar" style="width:256px;background:#0f172a;border-right:1px solid #1e293b;display:flex;flex-direction:column;overflow-y:auto;padding:10px 12px;flex-shrink:0">
+        ${buildSidebarHTML()}
+      </aside>
+      <main id="main-panel" style="flex:1;display:flex;flex-direction:column;padding:14px;overflow:auto;gap:10px">
+        ${buildMainHTML()}
+      </main>
+    </div>`;
+}
+
+window.chartHover=function(e,ML,PW,MT,mn,mx){const svg=document.getElementById('chart-svg');if(!svg)return;const rect=svg.getBoundingClientRect();const sx=800/rect.width;const x=(e.clientX-rect.left)*sx;const px=x-ML;if(px<0||px>PW)return;const t=px/PW;const freqVal=S.logX?mn*Math.pow(mx/mn,t):mn+t*(mx-mn);S.tooltip={x,freqVal,vals:S.curves.filter(c=>c.visible).map(c=>({label:c.label,color:c.color,a:computeAlpha(freqVal,c)}))};renderMain();};
+window.chartLeave=function(){S.tooltip=null;renderMain();};
+
+// onParam: update state only, debounce renderMain — sidebar never touched
+window.onParam=function(f,raw){
+  const v=parseFloat(raw);
+  S.display={...S.display,[f]:raw};
+  S.params={...S.params,[f]:isNaN(v)?S.params[f]:v*FM[f].sc};
+  clearTimeout(_chartTimer);
+  _chartTimer=setTimeout(renderMain,250);
+};
+window.onTmmParam=function(i,f,raw){
+  const v=parseFloat(raw);
+  S.tmmL=S.tmmL.map((l,j)=>j!==i?l:{...l,display:{...l.display,[f]:raw},params:{...l.params,[f]:isNaN(v)?l.params[f]:v*FM[f].sc}});
+  clearTimeout(_chartTimer);
+  _chartTimer=setTimeout(renderMain,250);
+};
+window.onParamKey=function(f,el,e){
+  if(e.key!=='ArrowUp'&&e.key!=='ArrowDown')return;
+  e.preventDefault();
+  const step=FM[f].step;
+  const cur=parseFloat(el.value)||0;
+  const next=e.key==='ArrowUp'?cur+step:Math.max(0,cur-step);
+  const rounded=Math.round(next/step)*step;
+  const decimals=(String(step).split('.')[1]||'').length;
+  el.value=rounded.toFixed(decimals);
+  el.dispatchEvent(new Event('input'));
+};
+window.switchModel=function(k){S.model=k;S.params=defParams(k);S.display=defDisplay(k);fullRender();};
+window.setTab=function(t){S.tab=t;renderMain();};
+window.onTmmModel=function(i,nm){S.tmmL=S.tmmL.map((l,j)=>j!==i?l:{model:nm,params:defParams(nm),display:defDisplay(nm)});fullRender();};
+window.addCurve=function(){const m=S.model,n=(S.cnt[m]||0)+1;S.cnt={...S.cnt,[m]:n};S.curves=[...S.curves,{id:uid++,label:`${MODELS[m].name} #${n}`,model:m,params:{...S.params},layers:m==='tmm'?S.tmmL.map(l=>({...l,params:{...l.params}})):null,color:COLORS[S.curves.length%COLORS.length],visible:true}];fullRender();};
+window.toggleCurve=function(id){S.curves=S.curves.map(c=>c.id===id?{...c,visible:!c.visible}:c);renderMain();};
+window.removeCurve=function(id){S.curves=S.curves.filter(c=>c.id!==id);fullRender();};
+window.exportCSV=exportCSV;
+window.copyText=function(id,btn){navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>{btn.textContent='Copied ✓';setTimeout(()=>btn.textContent='Copy',2000);});};
+
+fullRender();
+</script>
+</body>
+</html>
