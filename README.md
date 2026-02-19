@@ -107,7 +107,8 @@ If you use AlphaPorous in your research, please cite:
 **APA:**
 ```
 Olajide, J. L. (2026). AlphaPorous: A browser-based tool for acoustic 
-absorption prediction [Software]. GitHub. https://alphaporous.com
+absorption prediction (Version 1.0.0) [Software]. Zenodo. 
+https://doi.org/10.5281/zenodo.18675581
 ```
 
 **BibTeX:**
@@ -117,9 +118,10 @@ absorption prediction [Software]. GitHub. https://alphaporous.com
   title        = {AlphaPorous: A Browser-Based Tool for 
                   Acoustic Absorption Prediction},
   year         = {2026},
-  publisher    = {GitHub},
-  note         = {Developed at University of South Africa (UNISA)},
-  url          = {https://alphaporous.com}
+  publisher    = {Zenodo},
+  version      = {1.0.0},
+  doi          = {10.5281/zenodo.18675581},
+  url          = {https://doi.org/10.5281/zenodo.18675581}
 }
 ```
 
@@ -174,6 +176,7 @@ University of South Africa (UNISA)
 
 - [User Guide](https://alphaporous.com/docs/AlphaPorous_UserGuide_v1.pdf) - Full documentation
 - [Live Tool](https://alphaporous.com) - Browser-based application
+- [Zenodo Archive](https://doi.org/10.5281/zenodo.18675581) - Permanent DOI
 
 ---
 
