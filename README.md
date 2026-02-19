@@ -4,6 +4,7 @@
 A free, open-source, browser-based tool for predicting sound absorption coefficients of porous materials.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18675581.svg)](https://doi.org/10.5281/zenodo.18675581)
 
 ## 🌐 Live Tool
 
