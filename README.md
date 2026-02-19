@@ -1,201 +1,181 @@
-# 🔊 Acoustic Absorption Predictor
+# AlphaPorous
+### Acoustic Absorption Predictor
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/Version-1.0-green.svg)](https://github.com/yourusername/acoustic-absorption-predictor)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.xxxxxxx.svg)](https://doi.org/10.5281/zenodo.18675581)
-[![Live Tool](https://img.shields.io/badge/Live%20Tool-alphaporous.com-orange.svg)](https://alphaporous.com)
+A free, open-source, browser-based tool for predicting sound absorption coefficients of porous materials.
 
-> A free, open-access, browser-based tool for predicting sound absorption coefficients of porous materials using seven established acoustic models — no installation, no sign-up required.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**🌐 Live at:** [alphaporous.com](https://alphaporous.com)
+## 🌐 Live Tool
 
----
+**Access AlphaPorous online:** [alphaporous.com](https://alphaporous.com)
 
-## Overview
-
-The **Acoustic Absorption Predictor** allows researchers, engineers, and students to predict the frequency-dependent sound absorption coefficient α(f) of porous materials directly in the browser. It implements seven acoustic models ranging from simple empirical fits to full poroelastic theory, making it suitable for:
-
-- Material design and optimisation
-- Experimental validation against impedance tube data
-- Parametric studies (thickness, flow resistivity, porosity)
-- Multilayer composite absorber simulation
-- Academic coursework and teaching
+No installation required - runs entirely in your browser!
 
 ---
 
-## Features
+## 📖 About
 
-- **7 Acoustic Models** — Delany-Bazley, Miki, JCA, JCAL (Lafarge), Biot, Zwikker-Kosten, TMM
-- **Interactive Chart** — frequency-resolved α(f) with hover tooltip
-- **NRC Calculation** — automatic Noise Reduction Coefficient at 250, 500, 1000, 2000 Hz
-- **Multi-curve Overlay** — compare models and parameters side by side
-- **TMM 2-Layer Simulation** — chain two material layers for composite absorbers
-- **CSV Export** — download full frequency data for Excel / Python / MATLAB
-- **No Dependencies** — single HTML file, runs entirely client-side
-- **No Data Collection** — nothing is sent to any server
+AlphaPorous implements seven established acoustic models for predicting how porous materials absorb sound. Designed for researchers, engineers, and students working with acoustic materials.
 
----
-
-## Models Implemented
-
-| Model | Category | Required Parameters |
-|-------|----------|-------------------|
-| Delany-Bazley | Empirical | σ, d |
-| Miki | Empirical | σ, d |
-| JCA | Semi-Empirical | σ, φ, α∞, Λ, Λ', d |
-| JCAL (Lafarge) | Semi-Empirical | σ, φ, α∞, Λ, Λ', k'₀, d |
-| Biot | Semi-Empirical | σ, φ, α∞, Λ, Λ', E, ν, η_s, d |
-| Zwikker-Kosten | Phenomenological | σ, φ, α∞, r, d |
-| TMM (2-layer) | Phenomenological | Two layers, any model |
+**Key Features:**
+- 🔬 **7 Acoustic Models** - Delany-Bazley, Miki, JCA, JCAL, Biot, Zwikker-Kosten, TMM
+- 📊 **Real-time Plotting** - Interactive frequency-domain visualization
+- 🔢 **NRC Calculation** - Automatic Noise Reduction Coefficient
+- 📈 **Multi-curve Comparison** - Overlay up to 10 configurations
+- 💾 **CSV Export** - Download data for further analysis
+- 🌐 **No Installation** - Runs entirely client-side in browser
+- 🔓 **Open Source** - MIT License
 
 ---
 
-## Quick Start
+## 🚀 Quick Start
 
-**Option 1 — Use online:**
-Visit [alphaporous.com](https://alphaporous.com) — nothing to install.
+1. **Visit:** [alphaporous.com](https://alphaporous.com)
+2. **Select a model** from the sidebar
+3. **Enter material parameters**
+4. **Click "Add to Chart"**
+5. **Analyze the absorption curve**
 
-**Option 2 — Run locally:**
+**[📘 Download User Guide (PDF)](https://alphaporous.com/docs/AlphaPorous_UserGuide_v1.pdf)**
+
+---
+
+## 🔬 Implemented Models
+
+### Empirical Models
+- **Delany-Bazley (1970)** - Classic model for fibrous materials
+- **Miki (1990)** - Improved low-frequency accuracy
+
+### Semi-Empirical Models
+- **Johnson-Champoux-Allard (JCA)** - Viscous + thermal dissipation
+- **JCAL (Lafarge, 1997)** - Extended JCA with thermal permeability
+- **Biot (1956)** - Includes frame elasticity effects
+
+### Phenomenological Models
+- **Zwikker-Kosten** - Capillary tube model
+- **Transfer Matrix Method (TMM)** - For layered systems
+
+---
+
+## 🎯 Use Cases
+
+- **Building Acoustics** - Design sound-absorbing panels
+- **Automotive NVH** - Optimize cabin acoustic treatments
+- **Materials Research** - Validate experimental measurements
+- **Education** - Teach acoustic material behavior
+- **Product Development** - Compare material configurations
+
+---
+
+## 💻 Local Usage
+
+**Option 1: Use Online** (Recommended)
+- Visit [alphaporous.com](https://alphaporous.com)
+
+**Option 2: Download and Run Locally**
 ```bash
-git clone https://github.com/yourusername/acoustic-absorption-predictor.git
+# Clone repository
+git clone https://github.com/JimmyLolu/acoustic-absorption-predictor.git
+
+# Open in browser
 cd acoustic-absorption-predictor
-# Open alphaporous.html in any modern browser
-open alphaporous.html
+open index.html  # macOS
+start index.html # Windows
+xdg-open index.html # Linux
 ```
 
-That's it — no build step, no server, no dependencies.
+No build process or dependencies required!
 
 ---
 
-## Usage
+## 📖 Documentation
 
-1. **Select a model** from the left sidebar
-2. **Enter material parameters** — type freely or use ↑↓ arrow keys to adjust values
-3. **Click "+ Add to Chart"** to plot the absorption curve
-4. **Add more curves** to compare models or parameter sets
-5. **Switch tabs** to view the NRC Table or Data Table
-6. **Export CSV** for further analysis
-
-For detailed instructions see the [User Guide](docs/AAP_UserGuide_v1.pdf).
+**[User Guide (PDF)](https://alphaporous.com/docs/AlphaPorous_UserGuide_v1.pdf)** - Comprehensive guide including:
+- Model descriptions and equations
+- Parameter explanations
+- Step-by-step workflows
+- Troubleshooting
+- Citation formats
 
 ---
 
-## Parameter Reference
+## 📊 Citation
 
-| Parameter | Symbol | Unit | Typical Range |
-|-----------|--------|------|---------------|
-| Flow Resistivity | σ | Pa·s/m² | 5,000 – 50,000 |
-| Thickness | d | mm | 10 – 200 |
-| Porosity | φ | — | 0.1 – 0.99 |
-| Tortuosity | α∞ | — | 1.0 – 3.0 |
-| Viscous Char. Length | Λ | μm | 20 – 300 |
-| Thermal Char. Length | Λ' | μm | 40 – 600 |
-| Static Thermal Perm. | k'₀ | ×10⁻¹¹ m² | 1 – 100 |
-| Pore Radius | r | μm | 10 – 200 |
-| Frame Modulus | E | kPa | 10 – 10,000 |
-| Poisson's Ratio | ν | — | 0.1 – 0.45 |
-| Frame Loss Factor | η_s | — | 0.01 – 0.2 |
-
----
-
-## Air Properties Used
-
-All computations use standard air at 20°C:
-
-| Property | Value |
-|----------|-------|
-| Density ρ₀ | 1.213 kg/m³ |
-| Speed of sound c₀ | 343 m/s |
-| Characteristic impedance Z₀ | 415.86 Pa·s/m |
-| Dynamic viscosity η | 1.84 × 10⁻⁵ Pa·s |
-| Ambient pressure P₀ | 101,325 Pa |
-| Heat capacity ratio γ | 1.4 |
-| Prandtl number Pr | 0.711 |
-
----
-
-## Project Structure
-
-```
-acoustic-absorption-predictor/
-│
-├── alphaporous.html        # Main tool — single self-contained file
-├── README.md               # This file
-├── LICENSE                 # MIT License
-└── docs/
-    └── AAP_UserGuide_v1.pdf   # Full user guide with references and glossary
-```
-
----
-
-## Theoretical Background
-
-The tool implements the following acoustic models. Key references:
-
-- **Delany & Bazley (1970)** — *Applied Acoustics, 3*(2), 105–116
-- **Miki (1990)** — *J. Acoust. Soc. Japan (E), 11*(1), 19–24
-- **Johnson, Koplik & Dashen (1987)** — *J. Fluid Mechanics, 176*, 379–402
-- **Champoux & Allard (1991)** — *J. Applied Physics, 70*(4), 1975–1979
-- **Lafarge et al. (1997)** — *J. Acoust. Soc. America, 102*(4), 1995–2006
-- **Biot (1956)** — *J. Acoust. Soc. America, 28*(2), 168–178
-- **Zwikker & Kosten (1949)** — *Sound Absorbing Materials*, Elsevier
-- **Allard & Atalla (2009)** — *Propagation of Sound in Porous Media* (2nd ed.), Wiley
-
----
-
-## Citing This Work
-
-If you use this tool in your research, please cite:
+If you use AlphaPorous in your research, please cite:
 
 **APA:**
-> Olajide, J. L. (2026). *Acoustic Absorption Predictor: A browser-based tool for porous material acoustic modelling* [Web application]. University of South Africa (UNISA). https://alphaporous.com
+```
+Olajide, J. L. (2026). AlphaPorous: A browser-based tool for acoustic 
+absorption prediction [Software]. GitHub. https://alphaporous.com
+```
 
 **BibTeX:**
 ```bibtex
-@misc{olajide2026acoustictool,
-  author      = {Olajide, Jimmy Lolu},
-  title       = {Acoustic Absorption Predictor: A Browser-Based Tool
-                 for Porous Material Acoustic Modelling},
-  year        = {2026},
-  institution = {University of South Africa (UNISA)},
-  note        = {Open-access web tool. Available at: https://alphaporous.com},
-  doi         = {10.5281/zenodo.18675581}
+@software{olajide2026alphaporous,
+  author       = {Olajide, Jimmy Lolu},
+  title        = {AlphaPorous: A Browser-Based Tool for 
+                  Acoustic Absorption Prediction},
+  year         = {2026},
+  publisher    = {GitHub},
+  note         = {Developed at University of South Africa (UNISA)},
+  url          = {https://alphaporous.com}
 }
 ```
 
 ---
 
-## License
+## 🤝 Contributing
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
-You are free to use, modify, and distribute this tool for academic and research purposes. Attribution is appreciated.
+Contributions are welcome! Please feel free to:
+- Report bugs via [Issues](https://github.com/JimmyLolu/acoustic-absorption-predictor/issues)
+- Suggest new features
+- Submit pull requests
+- Improve documentation
 
 ---
 
-## Author
+## 📜 License
 
-**Jimmy Lolu Olajide**
-Computational Materials Scientist · Postgraduate Researcher
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+You are free to:
+- ✅ Use commercially
+- ✅ Modify
+- ✅ Distribute
+- ✅ Use privately
+
+---
+
+## 🙏 Acknowledgments
+
+Developed as part of postgraduate research at:
+
+**University of South Africa (UNISA)**  
 Department of Mechanical, Bioresources and Biomedical Engineering
-University of South Africa (UNISA) · Florida Campus
 
-[![ResearchGate](https://img.shields.io/badge/ResearchGate-Profile-00CCBB.svg)](https://www.researchgate.net/profile/Jimmy-Olajide)
-[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-Profile-4285F4.svg)](https://scholar.google.com/citations?user=HulJMpkAAAAJ)
+Research focus: Sustainable acoustic composites from waste materials within a circular economy framework.
 
 ---
 
-## Contributing
+## 📬 Contact
 
-Contributions, bug reports, and feature suggestions are welcome. Please open an issue or submit a pull request.
+**Jimmy Lolu Olajide**  
+Postgraduate Researcher  
+University of South Africa (UNISA)
 
-Potential future additions:
-- Oblique incidence models
-- Random incidence (Paris formula) integration
-- Additional empirical models (Mechel, Kirby-Cummings)
-- Material database with preset parameters
-- Multilayer TMM beyond 2 layers
+- 🌐 [alphaporous.com](https://alphaporous.com)
+- 📧 [ResearchGate](https://www.researchgate.net/profile/Jimmy-Olajide)
+- 🎓 [Google Scholar](https://scholar.google.com/citations?user=HulJMpkAAAAJ)
 
 ---
 
-*Built for open academic use · alphaporous.com*
+## 🔗 Related Resources
+
+- [User Guide](https://alphaporous.com/docs/AlphaPorous_UserGuide_v1.pdf) - Full documentation
+- [Live Tool](https://alphaporous.com) - Browser-based application
+
+---
+
+**Built with vanilla JavaScript | No frameworks | No dependencies**
+
+© 2026 Jimmy Lolu Olajide | MIT License
